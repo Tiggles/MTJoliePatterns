@@ -4,4 +4,6 @@ The three patterns are available to run by cloning this repository. Each instanc
 
 The file MTJoliePatterns/CBandSR/src/ServiceRegistry/Services/ParkingWWW/index.html and MTJoliePatterns/ServiceRegistry/src/Services/ParkingWWW/index.html both require an API key for Google Maps for use.
 
+Both CBandSR and Service Registry each provide run-scripts for the execution of the systems, saved as bash-scripts.
+
 The CBandSR is a combination of the Service Registry with the services hidden behind circuit breakers. An instance running is available at http://opendata.sdu.dk:8000
