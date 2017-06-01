@@ -90,7 +90,7 @@ define tryCreateTestData
     update@Database( updateRequest )( );
     testData =
     "INSERT OR REPLACE INTO Owners " +
-    "VALUES (1, 'Jonas Malte Hinchely', 'e8185f0f-70cf-4113-b7da-29a6151847c5', 'jonas@hinchely.dk')";
+    "VALUES (1, 'User', 'e8185f0f-70cf-4113-b7da-29a6151847c5', 'any@any.dk')";
     updateRequest = testData;
     update@Database( updateRequest )( );
     query@Database( "SELECT * FROM Owners ")( res );
