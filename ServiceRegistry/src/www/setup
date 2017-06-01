@@ -1,0 +1,157 @@
+<div class="ui raised segment">
+    <h3>General information</h3>
+    For registering, the Service Registry accepts requests of the following structure for registering a service, and deregistering a service, respectively:
+
+    <pre><code class="code javascript">
+    type RegisterRequest:void {
+        .binding:Binding
+        .serviceName:string
+        .interfacefile:string
+        .docFile:string
+        .authenticationKey:string
+    }
+
+    type DeregisterRequest:void {
+        .id:long
+    }
+    </code></pre>
+    All these must be defined, but an empty string will be accepted, in the event that no documentation file or interface file is associated with the service (if for instance the service is a website).
+    </br>
+
+    The operations for registering a service are:
+
+    <pre><code class="code javascript">
+    registerService( RegisterRequest )( long ),
+    deregisterService( DeregisterRequest )( bool ),
+    </code></pre>
+
+    And the registry listens at this website address and port 8001.
+    </br>
+
+    <h3> Registering.ol </h3>
+    Embedding the following file, which can be downloaded by clicking this button, can be used for abstraction when registering and deregistering a Jolie service:
+    </br>
+    <div class="center">
+        <button class='ui primary button downloadButton center'>
+            <a href='getInterfaceFile?query=registering.ol' target='_blank'>Download File</a>
+        </button>
+    </div>
+    </br>
+
+    Embedding this file allows for calling the operations defined in the following interface:
+
+    <pre><code class="code javascript">
+    RegisteringIFace {
+        RequestResponse:
+            registerService( RegisterRequest )( bool ),
+            deregisterService( void )( bool ),
+            generateAndGetJolieDocs( string )( string ),
+            getServiceID( void )( long )
+        OneWay:
+            ping( void )
+    }
+    </pre></code>
+
+    Add the following code to your own service:
+
+    <pre><code class="code haskell">
+    interface RegisteringIFace {
+        RequestResponse:
+            registerService( RegisterRequest )( bool ),
+            deregisterService( void )( bool ),
+            generateAndGetJolieDocs( string )( string ),
+            getServiceID( void )( long )
+        OneWay:
+            ping( void )
+    }
+
+    outputPort RegisterService {
+        Location: "local"
+        Interfaces: RegisteringIFace
+    }
+
+    include "types/Binding.iol"
+
+    type AuthenticationKeyRequest: void {
+        .name:string
+        .email:string
+    }
+
+    type AuthenticationKeyResponse: void {
+        .authenticationString:string
+    }
+
+    type RegisterRequest:void {
+        .binding:Binding
+        .serviceName:string
+        .interfacefile:string
+        .docFile:string
+        .authenticationKey:string
+    }
+
+    type DeregisterRequest:void {
+        .id:long
+        .authenticationString:string
+    }
+
+    type OwnerRequest: void {
+        .name:string
+        .email:string
+    }
+    </pre></code>
+
+    and now the operations can be called to register, deregister or create documentation from inputports in your service.
+
+    <h3>Example</h3>
+
+    The following example will register a service, sleep 10 seconds and then deregister the service:
+
+    <pre><code class="code javascript">
+    include "time.iol"
+
+    type RegisterRequest:void {
+       .protocol:string
+       .location:string
+       .serviceName:string
+       .interfacefile:string
+       .docFile:string
+    }
+
+    type DeregisterRequest:void {
+       .id:long
+    }
+
+    interface RegisteringIFace {
+       RequestResponse:
+       registerService( RegisterRequest )( bool ),
+       deregisterService( void )( bool ),
+       generateAndGetJolieDocs( string )( string )
+    }
+
+    outputPort Registering {
+           Location: "local"
+           Interfaces: RegisteringIFace
+    }
+
+    embedded {
+        Jolie: "registering.ol" in Registering
+    }
+
+    init
+    {
+        registerService@Registering({
+            .protocol = "sodep",
+            .location = "localhost:8080",
+            .serviceName = "exampleService",
+            .interfacefile = "Empty",
+            .docFile = "Empty"
+        })()
+    }
+
+    main
+    {
+        sleep@Time(10000)();
+        deregisterService@Registering()()
+    }
+    </pre></code>
+</div>

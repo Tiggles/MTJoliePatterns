@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<head>
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js"></script>
+    <script src="JolieCall.js"></script>
+    <script>
+    $(function() {
+        "use strict";
+
+        function show( data ) {
+            $("#body-content").html( data.msg );
+        }
+
+        $('.searchButton').click(function() {
+            jolieCall('searchByName', { query: $(".searchContent").val() }, show);
+        });
+
+        $('.homeButton').click(function() {
+            jolieCall('searchByName', { query: "" }, show);
+            var homebutton = document.getElementById("homebutton");
+            homebutton.className = "active item homeButton";
+            var aboutbutton = document.getElementById("aboutbutton");
+            aboutbutton.className = "item aboutButton";
+            var setupbutton = document.getElementById("setupbutton");
+            setupbutton.className = "item setupButton"
+        });
+
+        $('.aboutButton').click(function() {
+            jolieCall('about', '', show);
+            var homebutton = document.getElementById("homebutton");
+            homebutton.className = "item homeButton";
+            var setupbutton = document.getElementById("setupbutton");
+            setupbutton.className = "item setupButton"
+            var aboutbutton = document.getElementById("aboutbutton");
+            aboutbutton.className = "active item aboutButton";
+        });
+
+        $('.setupButton').click(function() {
+            jolieCall('setup', '', show);
+            var homebutton = document.getElementById("homebutton");
+            homebutton.className = "item homeButton";
+            var aboutbutton = document.getElementById("aboutbutton");
+            aboutbutton.className = "item aboutButton";
+            var setupbutton = document.getElementById("setupbutton");
+            setupbutton.className = "active item setupButton"
+        });
+
+        jolieCall("searchByName", { query: '' }, show);
+    });
+    </script>
+    <style>
+    .body-content {
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-top: 40px;
+        margin-bottom: auto;
+    }
+    .ui.button > a {
+        color: white;
+        text-decoration: none;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="ui secondary pointing menu">
+          <a class="active item homeButton" id="homebutton">
+            Home
+          </a>
+          <a class="item aboutButton" id="aboutbutton">
+            About
+          </a>
+          <a class="item setupButton" id="setupbutton">
+              Setup
+          </a>
+          <div class="right menu">
+              <div class="ui small image">
+                <img src="http://www.sdu.dk/-/media/files/nyheder/logoer/sdu_black_rgb.png?la=da">
+              </div>
+              <div class="item">
+                <div class="ui icon input">
+                  <input type="text" placeholder="Search by name..." class="searchContent">
+                  <i class="search link icon searchButton"></i>
+                </div>
+              </div>
+          </div>
+        </div>
+    </header>
+    <div>
+        <div id='body-content' class='body-content'>
+        </div>
+    </div>
+</body>
