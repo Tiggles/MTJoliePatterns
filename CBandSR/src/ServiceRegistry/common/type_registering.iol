@@ -12,8 +12,8 @@ type AuthenticationKeyResponse: void {
 type RegisterRequest:void {
     .binding:Binding
     .serviceName:string
-    .interfacefile:string
-    .docFile:string
+    .interfacefile?:string | void
+    .docFile?:string  | void
     .authenticationKey:string
 }
 
