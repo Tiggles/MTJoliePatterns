@@ -25,8 +25,7 @@ constants {
                       <th>Owner</th>
                       <th>Location</th>
                       <th>Protocol</th>
-                      <th>Interface</th>
-                      <th>Documentation</th>
+                      <th/>
                     </tr>
                   </thead>
                   <tbody>",
@@ -130,20 +129,22 @@ define buildTable
 {
     for (i = 0, i < #queryResult.row, i++) {
         with ( queryResult.row[i] ) {
+            interfaceButton = "";
+            documentationButton = "";
             response.msg += "<tr>
                               <td>" + .Name + "</td>
                               <td>" + .OwnerName + "</td>
                               <td>" + .Location + "</td>
                               <td>" + .Protocol + "</td>
                               <td>
-                                <button class='ui primary button downloadButton'>
-                                    <a href='getInterfaceFile?query=" + .Name + "' target='_blank'>Download Interface</a>
-                                </button>
-                              </td>
-                              <td>
-                               <button class='ui secondary button downloadButton'>
+                                <a href='getInterfaceFile?query=" + .Name + "' target='_blank'>
+                                  <button class='ui primary button downloadButton'>
+                                      Download Interface
+                                    </button>
+                                </a>
+                                <button class='ui secondary button downloadButton'>
                                     <a href='getServiceDocFile?query=" + .Name + "' target='_blank'>Show Documentation</a>
-                               </td>
+                                </td>
                              </tr>"
         }
     }
