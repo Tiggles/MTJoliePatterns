@@ -58,7 +58,6 @@ main {
     [ default( request )( response )
     {
         format = "html";
-        println@Console( request.operation )();
         contains@StringUtils( request.operation { .substring = ".." } )( reversePathTraversal );
         if (request.operation == "" || reversePathTraversal )
         {
@@ -129,22 +128,31 @@ define buildTable
 {
     for (i = 0, i < #queryResult.row, i++) {
         with ( queryResult.row[i] ) {
-            interfaceButton = "";
-            documentationButton = "";
+          interfaceButton = documentationButton = "";
+          if (.hasInterfaceFile == 1) {
+            interfaceButton = "
+            <a href='getInterfaceFile?query=" + .Name + "' target='_blank'>
+              <button class='ui primary button downloadButton'>
+                  Download Interface
+                </button>
+            </a>
+            "};
+            if (.hasDocFile == 1) {
+              documentationButton = "
+              <a href='getServiceDocFile?query=" + .Name + "' target='_blank'>
+                <button class='ui secondary button downloadButton'>
+                  Show Documentation
+                </button>
+              </a>"
+            };
             response.msg += "<tr>
                               <td>" + .Name + "</td>
                               <td>" + .OwnerName + "</td>
                               <td>" + .Location + "</td>
                               <td>" + .Protocol + "</td>
-                              <td>
-                                <a href='getInterfaceFile?query=" + .Name + "' target='_blank'>
-                                  <button class='ui primary button downloadButton'>
-                                      Download Interface
-                                    </button>
-                                </a>
-                                <button class='ui secondary button downloadButton'>
-                                    <a href='getServiceDocFile?query=" + .Name + "' target='_blank'>Show Documentation</a>
-                                </td>
+                              <td>" + interfaceButton  + "
+                                " + documentationButton + "
+                              </td>
                              </tr>"
         }
     }
