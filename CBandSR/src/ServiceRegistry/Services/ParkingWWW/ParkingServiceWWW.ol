@@ -43,8 +43,8 @@ init
 {
     with ( registerRequest ) {
         .serviceName = PARKING_SERVICEWWW_NAME;
-        .interfacefile = "None";
-        .docFile = "None";
+        .interfacefile = "";
+        .docFile = "";
         .authenticationKey = authenticationKey;
         .binding << {
             .location = PARKING_SERVICEWWW_LOCATION,
