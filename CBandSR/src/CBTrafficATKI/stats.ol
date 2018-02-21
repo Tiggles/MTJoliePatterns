@@ -20,7 +20,7 @@ constants {
     randomLowerValue = 0.10,
     timeSinceLastFailureAllowed = 90000, // 90 seconds in milliseconds
     useTimerForClosing = true,
-    debug = true,
+    debug = false,
     DB_NAME_PREFIX = "CB"
 }
 
