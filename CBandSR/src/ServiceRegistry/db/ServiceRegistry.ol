@@ -42,14 +42,12 @@ define initConnection
 
 define getNextIDForOwner
 {
-    println@Console( "now getting ID" )();
     query@Database( "SELECT MAX(ID) as ID FROM Owners" )( res );
     nextID = res.row.ID + 1
 }
 
 define getNextIDForRegistering
 {
-    println@Console( "now getting ID" )();
     query@Database( "SELECT MAX(ID) as ID FROM ServiceTable" )( res );
     nextID = res.row.ID + 1
 }
@@ -70,10 +68,8 @@ main
             validateAuthentication;
             exists = false;
             checkIfServiceExists;
-            println@Console( "Exists: " + exists )();
             if (exists == false) {
                 getNextIDForRegistering;
-                println@Console( "Got next ID as " + nextID )();
                 with ( request )
                 {
                     update@Database("INSERT INTO ServiceTable VALUES (" + nextID + ", '" + .serviceName + "', '" + .binding.location + "', '" + .binding.protocol + "', '" + .interfacefile + "', '" + .docFile + "', " + OwnerID + ");" )();
@@ -109,7 +105,7 @@ main
         }
     }]
     [ searchServices( queryRequest )( queryResponse ) {
-        query = "SELECT st.Name, st.Location, st.Protocol, o.Name as OwnerName FROM ServiceTable st INNER JOIN Owners o ON o.ID = st.OwnerID WHERE st.Name like '%' || :queryRequest || '%' ";
+        query = "SELECT st.Name, st.Location, st.Protocol, o.Name as OwnerName, (st.interfacefile is not null and st.interfacefile != '') as hasInterfaceFile, (st.docFile is not null and st.docFile != '') as hasDocFile  FROM ServiceTable st INNER JOIN Owners o ON o.ID = st.OwnerID WHERE st.Name like '%' || :queryRequest || '%' ";
         query.queryRequest = queryRequest;
         scope( queryScope )
         {
@@ -130,12 +126,9 @@ main
     [ ping( serviceID )( statusCode ) {
         query = "SELECT st.ID FROM ServiceTable st WHERE st.ID = " + serviceID + ";";
         query@Database( query )( queryResult );
-        println@Console( query )();
         valueToPrettyString@StringUtils( queryResult )( res );
-        println@Console( res )();
         if ( #queryResult.row > 0 ) {
             update = "INSERT OR REPLACE INTO PingTable VALUES (" + serviceID + ", datetime('now'));";
-            println@Console( update )();
             update@Database( update )();
             statusCode = STATUS_OK
         } else {
@@ -150,12 +143,8 @@ main
         if ( exists == false ) {
             match@StringUtils( request.email { .regex = emailRegex })( match );
             if ( request.name != "" && match == 1 ) {
-                println@Console( "inserting owner" )();
                 getRandomUUID@StringUtils()( response );
                 getNextIDForOwner;
-                println@Console( nextID )();
-                println@Console( request.name )();
-                println@Console( request.email )();
                 authenticationUpdate = "INSERT INTO Owners " +
                 "VALUES (" + nextID + ", '" + request.name + "', '" + response + "', '" + request.email + "');";
                 update@Database( authenticationUpdate )()
@@ -181,7 +170,6 @@ define compareServiceOwnerWithRegistrar
     {
         serviceID = -1
     } else {
-        println@Console( "correctOwner" )();
         correctOwner = true
     }
 }
@@ -196,7 +184,6 @@ define checkIfOwnerExists
     query@Database( query )( res );
     if ( is_defined( res.row.ID ))
     {
-        println@Console( "Owner exists" )();
         exists = true;
         response = ""
     }
@@ -209,7 +196,6 @@ define updateProtocolDocumentationAndIncludeFile
         "UPDATE ServiceTable
         SET Protocol = '" + .binding.protocol + "', DocFile = '" + .docFile + "', InterfaceFile = '" + .interfacefile + "'
         WHERE ID = " + serviceID + ";";
-        println@Console( update )();
         update@Database( update )( )
     }
 }
@@ -218,14 +204,11 @@ define checkIfServiceExists
 {
     with( request ){
         query = "SELECT st.ID, st.OwnerID FROM ServiceTable st INNER JOIN Owners o ON o.ID = st.OwnerID WHERE st.Name = '" + .serviceName + "' AND st.Location = '" + .binding.location + "' AND o.AuthenticationKey = '" + .authenticationKey + "'";
-        println@Console( query )();
         query@Database( query )( queryResult );
         if ( is_defined( queryResult.row.ID ) ) {
-            println@Console( "It was defined with queryResult.row.ID being: " + queryResult.row.ID )();
             correctOwner = false;
             compareServiceOwnerWithRegistrar; // Overwrites ID if not matching owner
             if ( correctOwner ) {
-                println@Console( "CorrectOwner, so we update" )();
                 serviceID = queryResult.row.ID;
                 updateProtocolDocumentationAndIncludeFile
             };
@@ -237,7 +220,6 @@ define checkIfServiceExists
 define getIndexValue
 {
     if ( INDEXSELECTIONMODE == PER_SERVICE_ROUND_ROBIN ) {
-        println@Console( "PER_SERVICE_ROUND_ROBIN" )();
         if ( is_defined( global.services.(queryRequest) ) == false) {
             global.services.(queryRequest) = 0
         };
@@ -245,16 +227,13 @@ define getIndexValue
         indexValue = indexValue++ % serviceCount;
         global.services.(queryRequest) = indexValue
     } else if ( INDEXSELECTIONMODE == RANDOM ) {
-        println@Console( "RANDOM" )();
         random@Math()( randVal );
         indexValue = int((randVal * serviceCount) % serviceCount)
-    };
-    println@Console( "indexValue was selected as " + indexValue )()
+    }
 }
 
 define validateAuthentication
 {
-    println@Console( "Validating auth" )();
     query = "SELECT o.ID " +
     "FROM Owners o " +
     "WHERE o.AuthenticationKey = '" + request.authenticationKey + "';";
@@ -263,8 +242,7 @@ define validateAuthentication
         throw( NotExistingUser )
     } else {
         OwnerID = queryRes.row.ID
-    };
-    println@Console( OwnerID )()
+    }
 }
 
 define deregisterThread
