@@ -9,6 +9,6 @@ constants {
 
 outputPort Service {
     Location: SERVICE_LOCATION
-    Protocol: http
+    Protocol: CIRCUITBREAKER_PROTOCOL
     Interfaces: ServiceRegistryInterface // CHANGE DEPENDING ON SERVICE INTERFACE; IF OUTPUTPORT ADDS CHECKCONSTANTS, THIS CAN BE REPLACED
 }

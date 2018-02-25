@@ -75,7 +75,7 @@ main
 
 define getParkingData
 {
-    GenericHTTP.location = "socket://portal.opendata.dk:80/dataset/e5e26cac-e3d0-4a8b-95f4-830f3bab8cef/resource/ab561693-0d07-4ef5-a753-1ce4b3d430d8/download/parkering.json";
+    GenericHTTP.location = "socket://portal.opendata.dk:443/dataset/e5e26cac-e3d0-4a8b-95f4-830f3bab8cef/resource/ab561693-0d07-4ef5-a753-1ce4b3d430d8/download/parkering.json";
     download@GenericHTTP( )( response )
 }
 

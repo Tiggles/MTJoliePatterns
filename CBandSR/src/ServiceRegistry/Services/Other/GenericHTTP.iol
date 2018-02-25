@@ -1,4 +1,4 @@
 outputPort GenericHTTP {
-    Protocol: http { .debug.showContent = .debug = false; .method = "get"; .format = "json" }
+    Protocol: https { .debug.showContent = .debug = false; .method = "get" }
     RequestResponse: download
 }

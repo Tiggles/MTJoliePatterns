@@ -142,12 +142,22 @@ define getAndFormatParkingDataResponse
             LiveParkingExternalService.location = "socket://" + livePortResult.Location;
             LiveParkingExternalService.protocol = livePortResult.Protocol;
 
-            getLiveParkingData@LiveParkingExternalService()( liveData );
-            get_info@ParkingExternalService()( result );
+            scope( LiveParking )
+            {
+                install( default => println@Console( "No Live Parking endpoint found" )() );
+                getLiveParkingData@LiveParkingExternalService()( liveData )
+            };
+
+            scope( Parking )
+            {
+                install( default => println@Console( "No parking endpoint found" )());
+                get_info@ParkingExternalService()( result )
+            };
+
             if ( #result.features != 0 ) {
                 formatParkingDataResponse;
                 global.lastDataRetrieval = time
-            } else {
+            } else { // EITHER RETURNS CONTENTS OR CACHE
                 response << global.parkingCache
             }
         }

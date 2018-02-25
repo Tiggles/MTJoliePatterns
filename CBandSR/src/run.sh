@@ -38,4 +38,4 @@ echo ParkingWWW
 echo
 jolie ParkingServiceWWW.ol &
 cd ../TrafficATKI
-jolie TrafficATKI.ol &
+#jolie TrafficATKI.ol &

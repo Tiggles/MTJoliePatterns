@@ -9,6 +9,6 @@ constants {
 
 outputPort Service {
     Location: SERVICE_LOCATION
-    Protocol: sodep
+    Protocol: CIRCUITBREAKER_PROTOCOL
     Interfaces: ParkingServiceInterface // CHANGE DEPENDING ON SERVICE INTERFACE; IF OUTPUTPORT ADDS CHECKCONSTANTS, THIS CAN BE REPLACED
 }

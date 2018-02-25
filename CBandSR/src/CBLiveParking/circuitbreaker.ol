@@ -76,14 +76,12 @@ define checkErrorRate
 
 courier CircuitBreaker {
     [ interface SERVICE_INTERFACE( request )( response )] {
-        println@Console( "Live CB" )();
         scope( CBCourier )
         {
             if ( global.state == CLOSED ) {
                 callTO;
                 install ( default => cancelCallTO; failure@Stats(); checkErrorRate );
                 forward( request )( response );
-                println@Console( "Forward succeeded" )();
                 success@Stats(); cancelCallTO
             } else if ( global.state == OPEN ) {
                 throw( CBFault )
