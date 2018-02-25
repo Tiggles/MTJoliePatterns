@@ -128,18 +128,12 @@ main {
     }
     [ nextRollingWindow( ) ] {
         getTotalFailuresAndTimeouts;
-        println@Console( "total: " + total )();
-        println@Console( "totalFailuresAndTimeouts: " + totalFailuresAndTimeouts )();
-        println@Console( global.rollingWindows[global.rollingWindowIndex].successes ) ();
-        println@Console( global.rollingWindows[global.rollingWindowIndex].failures ) ();
-        println@Console( global.rollingWindows[global.rollingWindowIndex].timeouts ) ();
 
         global.rollingWindowIndex = ( global.rollingWindowIndex + 1 ) % totalRollingWindows;
         global.rollingWindows[global.rollingWindowIndex].successes = 0;
         global.rollingWindows[global.rollingWindowIndex].failures = 0;
         global.rollingWindows[global.rollingWindowIndex].timeouts = 0;
-        scheduleTimeout@Time( rollingWindowTimeValue { .operation = "nextRollingWindow" } )( );
-        println@Console( "Current window: " + global.rollingWindowIndex )()
+        scheduleTimeout@Time( rollingWindowTimeValue { .operation = "nextRollingWindow" } )( )
     }
 }
 
